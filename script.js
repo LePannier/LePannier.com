@@ -1,69 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Add simple drag functionality to the hero lego blocks
-    const blocks = document.querySelectorAll('.lego-block');
-    
-    blocks.forEach(block => {
-        let isDragging = false;
-        let startX, startY, initialX, initialY;
+    // Drag the hero lego blocks (mouse, touch and pen via pointer events)
+    document.querySelectorAll('.lego-block').forEach(block => {
+        let offsetX = 0;
+        let offsetY = 0;
 
-        block.addEventListener('mousedown', dragStart);
-        
-        function dragStart(e) {
-            isDragging = true;
-            // Stop the CSS animation while dragging
-            block.style.animation = 'none';
-            block.style.zIndex = 10;
-            
-            // Calculate initial positions
+        block.addEventListener('pointerdown', e => {
+            // On mobile the blocks are a static list, so there is nothing to drag
+            if (getComputedStyle(block).position !== 'absolute') return;
+
             const rect = block.getBoundingClientRect();
-            initialX = rect.left;
-            initialY = rect.top;
-            
-            startX = e.clientX - initialX;
-            startY = e.clientY - initialY;
-            
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', dragEnd);
-        }
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            block.setPointerCapture(e.pointerId);
+            block.style.animation = 'none';
+            block.style.transition = 'none';
+            block.style.zIndex = 10;
+            block.addEventListener('pointermove', drag);
+            block.addEventListener('pointerup', dragEnd);
+            block.addEventListener('pointercancel', dragEnd);
+        });
 
         function drag(e) {
-            if (!isDragging) return;
-            e.preventDefault();
-            
-            const currentX = e.clientX - startX;
-            const currentY = e.clientY - startY;
-            
-            // Get parent container position to keep it relative
             const parentRect = block.parentElement.getBoundingClientRect();
-            const relativeX = currentX - parentRect.left;
-            const relativeY = currentY - parentRect.top;
-            
-            block.style.left = `${relativeX}px`;
-            block.style.top = `${relativeY}px`;
+            block.style.left = `${e.clientX - offsetX - parentRect.left}px`;
+            block.style.top = `${e.clientY - offsetY - parentRect.top}px`;
             block.style.bottom = 'auto';
             block.style.right = 'auto';
             block.style.transform = 'rotate(0deg) scale(1.05)';
         }
 
-        function dragEnd(e) {
-            isDragging = false;
+        function dragEnd() {
+            block.style.transition = '';
             block.style.zIndex = 1;
             block.style.transform = 'rotate(0deg) scale(1)';
-            
-            document.removeEventListener('mousemove', drag);
-            document.removeEventListener('mouseup', dragEnd);
+            block.removeEventListener('pointermove', drag);
+            block.removeEventListener('pointerup', dragEnd);
+            block.removeEventListener('pointercancel', dragEnd);
         }
     });
 
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
     // Burger menu toggle
     const burgerMenu = document.querySelector('.burger-menu');
     const navLinks = document.querySelector('.nav-links');
@@ -74,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navLinks.classList.toggle('active');
             burgerMenu.setAttribute('aria-expanded', isActive);
         });
-        
+
         // Close menu when clicking a link
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
@@ -86,20 +62,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Scroll Reveal Animations
-const revealElements = document.querySelectorAll(".reveal");
-const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add("active");
-            revealObserver.unobserve(entry.target);
-        }
+// Scroll reveal animations.
+// Once an element has faded in, drop the reveal classes so its own
+// (faster) hover transitions apply again.
+function finishReveal(el) {
+    el.classList.remove('reveal', 'active');
+}
+
+const revealElements = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            el.classList.add('active');
+            revealObserver.unobserve(el);
+            // 0.8s fade + up to 0.3s delay
+            setTimeout(() => finishReveal(el), 1200);
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
     });
-}, {
-    threshold: 0.15,
-    rootMargin: "0px 0px -50px 0px"
-});
-revealElements.forEach(el => revealObserver.observe(el));
+    revealElements.forEach(el => revealObserver.observe(el));
+} else {
+    revealElements.forEach(finishReveal);
+}
 
 // Cookie Consent and Google Analytics
 const GA_ID = 'G-YSJEDDSZLC';

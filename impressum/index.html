@@ -1,62 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Impressum - Le Pannier Studios">
     <title>Impressum | Le Pannier Studios</title>
-    
+
     <!-- SEO Meta Tags -->
     <link rel="canonical" href="https://www.lepannier.com/impressum/" />
     <meta property="og:title" content="Impressum | Le Pannier Studios">
     <meta property="og:description" content="Impressum - Le Pannier Studios">
     <meta property="og:url" content="https://www.lepannier.com/impressum/">
     <meta property="og:type" content="website">
+
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <style>
-        .impressum-page {
-            max-width: 800px;
-            margin: 4rem auto;
-            padding: 2rem;
-        }
-        .impressum-content {
-            padding: 3rem;
-            margin-top: 2rem;
-        }
-        .impressum-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .impressum-content p {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-        .back-link:hover {
-            color: var(--rose);
-            text-decoration: underline;
-        }
-        @media (max-width: 768px) {
-            .impressum-page {
-                margin: 1rem 0.5rem;
-                padding: 0;
-            }
-            .impressum-content {
-                padding: 1.25rem;
-            }
-            .impressum-content h2 {
-                font-size: 1.4rem;
-            }
-            .impressum-content p {
-                font-size: 0.95rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar block-border">
@@ -65,30 +23,32 @@
                 <span class="dot rose"></span>
                 <span class="dot yellow"></span>
                 <span class="dot green"></span>
-                <h1><a href="/">Le Pannier Studios</a></h1>
+                <a href="/" class="logo-title">Le Pannier Studios</a>
             </div>
         </div>
     </nav>
 
-    <main class="impressum-page">
-        <a href="/" class="back-link">← Back</a>
-        <div class="impressum-content block-border bg-white">
-            <h2 class="bold-title text-black">Impressum</h2>
-            <p><strong>Angaben gemäß § 5 TMG</strong></p>
+    <main class="legal-page">
+        <a href="/" class="back-link">← Zurück</a>
+        <div class="legal-content block-border bg-white">
+            <h1>Impressum</h1>
+            <p><strong>Angaben gemäß § 5 DDG</strong></p>
             <p>Kai Pannier<br>
             Beethovenstraße 17<br>
             53115 Bonn</p>
-            
+
             <p><strong>Kontakt</strong></p>
-            <p>E-Mail: contact@lepannier.com<br>
+            <p>E-Mail: <a href="mailto:contact@lepannier.com">contact@lepannier.com</a><br>
             Website: www.lepannier.com</p>
         </div>
     </main>
+
     <div class="legal-links">
         <a href="/impressum/">Impressum</a>
         <a href="/datenschutz/">Datenschutz</a>
         <button type="button" class="cookie-settings">Cookie-Einstellungen</button>
     </div>
+
     <script src="/script.js"></script>
 </body>
 </html>
